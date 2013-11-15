@@ -6,6 +6,7 @@ module Clumps (
 
 
 import qualified Data.Text as T
+import Data.Maybe
 
 type KMer = T.Text
 
@@ -20,10 +21,8 @@ type KMer = T.Text
 -- every k-mer we have on hand
 clumps :: T.Text -> Int -> Int -> Int -> [KMer]
 clumps s k l t =
-    foldr (\l_segment acc ->
-            case process_segment l_segment of
-              Nothing -> acc
-              Just kmer -> kmer:acc) [] ls
+    mapMaybe process_segment ls
+
   where
     ls :: [T.Text]
     ls = [ T.take l $ T.drop x s | x <- [0..(T.length s - l)] ]
